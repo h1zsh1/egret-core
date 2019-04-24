@@ -162,3 +162,20 @@ Egret 项目使用 TypeScirpt 语言来开发。TypeScript 是 JavaScript 的超
 This content is released under the (https://opensource.org/licenses/BSD-2-Clause) BSD License.
 
 ![](https://img.shields.io/badge/license-New%20BSD-blue.svg)
+
+
+
+### 更新egret 主库代码到自己的 master
+
+```
+// 查看远程库
+git remote -v 
+// 添加远程库
+git remote add egret https://github.com/egret-labs/egret-core
+// 更新远程库
+git fetch egret
+// merge 分支
+git merge egret/master
+// 提交远方库
+git push 
+```
