@@ -95,6 +95,11 @@ declare type ResourceMergerSelector = (file: string) => {
 };
 declare module RES {
     /**
+     * @源码改动
+     * 预加载配置json
+     */
+    let resDefaultJson: string;
+    /**
      * Get resource information through file path
      * @param path file path
      * @version Egret 5.2
@@ -394,7 +399,7 @@ declare module RES {
      * @platform Web,Native
      * @language zh_CN
      */
-    function loadConfig(url: string, resourceRoot: string): Promise<void>;
+    function loadConfig(url: string, resourceRoot: string, resDefaultJson?: string): Promise<void>;
     /**
      * Load a set of resources according to the group name.
      * @param name Group name to load the resource group.

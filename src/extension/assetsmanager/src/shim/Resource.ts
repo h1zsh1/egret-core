@@ -29,7 +29,6 @@
 
 module RES {
 
-
     export type GetResAsyncCallback = (value?: any, key?: string) => any;
     /**
     * Convert the file name of the resource to the Key value used in the project.
@@ -174,7 +173,7 @@ module RES {
      * @platform Web,Native
      * @language zh_CN
      */
-    export function loadConfig(url: string, resourceRoot: string): Promise<void> {
+    export function loadConfig(url: string, resourceRoot: string, resDefaultJson?: string): Promise<void> {
         if (resourceRoot.indexOf('://') >= 0) {
             const temp = resourceRoot.split('://');
             resourceRoot = temp[0] + '://' + path.normalize(temp[1] + '/');
@@ -184,6 +183,8 @@ module RES {
             resourceRoot = path.normalize(resourceRoot + "/");
             url = url.replace(resourceRoot, '');
         }
+        //***** 源码改动 */
+        RES.resDefaultJson = resDefaultJson || ''
         setConfigURL(url, resourceRoot);
         if (!instance) instance = new Resource();
         return compatiblePromise(instance.loadConfig());
@@ -903,14 +904,16 @@ module RES {
             return queue.pushResItem(r).then(value => {
                 host.save(r as ResourceInfo, value);
                 if (compFunc && r) {
-                    compFunc.call(thisObject, value, r.url);
+                    //**源码改动 */
+                    compFunc.call(thisObject, value, r.url, true);
                 }
                 return value;
             }, error => {
                 host.remove(r as ResourceInfo);
                 ResourceEvent.dispatchResourceEvent(this, ResourceEvent.ITEM_LOAD_ERROR, "", r as ResourceInfo);
                 if (compFunc) {
-                    compFunc.call(thisObject, null, url);
+                    //**源码改动 */
+                    compFunc.call(thisObject, null, url, false);
                     return Promise.reject(null);
                 }
                 return Promise.reject(error);

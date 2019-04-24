@@ -179,3 +179,14 @@ git merge egret/master
 // 提交远方库
 git push 
 ```
+
+### 源码编译
+
+```
+// 编译 egret 主源码
+node ./tools/bin/egret make 
+
+// 编译扩展库 例如 assetsmanager 
+cd src/extension/assetsmanager 
+node ../../../tools/bin/egret build
+```

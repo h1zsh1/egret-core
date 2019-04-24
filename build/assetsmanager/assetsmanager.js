@@ -307,6 +307,8 @@ var RES;
     RES.ResourceConfig = ResourceConfig;
     __reflect(ResourceConfig.prototype, "RES.ResourceConfig");
 })(RES || (RES = {}));
+//**源码改动 */
+window['RES'] = RES;
 //////////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright (c) 2014-present, Egret Technology.
@@ -920,7 +922,7 @@ var RES;
      * @platform Web,Native
      * @language zh_CN
      */
-    function loadConfig(url, resourceRoot) {
+    function loadConfig(url, resourceRoot, resDefaultJson) {
         if (resourceRoot.indexOf('://') >= 0) {
             var temp = resourceRoot.split('://');
             resourceRoot = temp[0] + '://' + RES.path.normalize(temp[1] + '/');
@@ -930,6 +932,8 @@ var RES;
             resourceRoot = RES.path.normalize(resourceRoot + "/");
             url = url.replace(resourceRoot, '');
         }
+        //***** 源码改动 */
+        RES.resDefaultJson = resDefaultJson || '';
         RES.setConfigURL(url, resourceRoot);
         if (!instance)
             instance = new Resource();
@@ -1616,14 +1620,16 @@ var RES;
             return RES.queue.pushResItem(r).then(function (value) {
                 RES.host.save(r, value);
                 if (compFunc && r) {
-                    compFunc.call(thisObject, value, r.url);
+                    //**源码改动 */
+                    compFunc.call(thisObject, value, r.url, true);
                 }
                 return value;
             }, function (error) {
                 RES.host.remove(r);
                 RES.ResourceEvent.dispatchResourceEvent(_this, RES.ResourceEvent.ITEM_LOAD_ERROR, "", r);
                 if (compFunc) {
-                    compFunc.call(thisObject, null, url);
+                    //**源码改动 */
+                    compFunc.call(thisObject, null, url, false);
                     return Promise.reject(null);
                 }
                 return Promise.reject(error);
@@ -1982,11 +1988,21 @@ var RES;
         };
         processor_1.TextProcessor = {
             onLoadStart: function (host, resource) {
-                var request = new egret.HttpRequest();
-                request.responseType = egret.HttpResponseType.TEXT;
-                request.open(RES.getVirtualUrl(resource.root + resource.url), "get");
-                request.send();
-                return promisify(request, resource);
+                //** 源码改动 如果是自己生成的预加载的资源配置 返回自己的json ***/
+                if (RES.resDefaultJson && resource.type === 'legacyResourceConfig') {
+                    var resDefaultData = RES.resDefaultJson;
+                    RES.resDefaultJson = '';
+                    return new Promise(function (resolve, reject) {
+                        resolve(resDefaultData);
+                    });
+                }
+                else {
+                    var request = new egret.HttpRequest();
+                    request.responseType = egret.HttpResponseType.TEXT;
+                    request.open(RES.getVirtualUrl(resource.root + resource.url), "get");
+                    request.send();
+                    return promisify(request, resource);
+                }
             },
             onRemoveStart: function (host, resource) {
                 return true;

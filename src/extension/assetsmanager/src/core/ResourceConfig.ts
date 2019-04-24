@@ -36,6 +36,11 @@ type ResourceMergerSelector = (file: string) => { path: string, alias: string };
 
 module RES {
     /**
+     * @源码改动
+     * 预加载配置json
+     */
+    export let resDefaultJson: string
+    /**
      * @internal
      */
     export var resourceNameSelector: ResourceNameSelector = (p) => p;
@@ -360,3 +365,6 @@ module RES {
         }
     }
 }
+//**源码改动 */
+
+window['RES'] = RES

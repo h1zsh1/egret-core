@@ -176,11 +176,20 @@ module RES.processor {
     export var TextProcessor: Processor = {
 
         onLoadStart(host, resource) {
-            var request: egret.HttpRequest = new egret.HttpRequest();
-            request.responseType = egret.HttpResponseType.TEXT;
-            request.open(RES.getVirtualUrl(resource.root + resource.url), "get");
-            request.send();
-            return promisify(request, resource)
+            //** 源码改动 如果是自己生成的预加载的资源配置 返回自己的json ***/
+            if (RES.resDefaultJson && resource.type === 'legacyResourceConfig') {
+                var resDefaultData = RES.resDefaultJson
+                RES.resDefaultJson = ''
+                return new Promise(function (resolve, reject) {
+                    resolve(resDefaultData)
+                });
+            } else {
+                var request: egret.HttpRequest = new egret.HttpRequest();
+                request.responseType = egret.HttpResponseType.TEXT;
+                request.open(RES.getVirtualUrl(resource.root + resource.url), "get");
+                request.send();
+                return promisify(request, resource)
+            }
         },
 
         onRemoveStart(host, resource) {
