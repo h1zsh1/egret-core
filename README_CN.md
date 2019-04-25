@@ -189,4 +189,8 @@ node ./tools/bin/egret make
 // 编译扩展库 例如 assetsmanager 
 cd src/extension/assetsmanager 
 node ../../../tools/bin/egret build
+
+// 创建自己的egret code
+node createMyEgret.js
+
 ```

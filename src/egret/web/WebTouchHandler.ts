@@ -132,7 +132,8 @@ namespace egret.web {
          * @private
          */
         private prevent(event):void {
-            event.stopPropagation();
+            //** 源码改动去除冒泡 */
+            // event.stopPropagation();
             if (event["isScroll"] != true && !this.canvas['userTyping']) {
                 event.preventDefault();
             }

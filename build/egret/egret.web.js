@@ -3109,7 +3109,8 @@ var egret;
              * @private
              */
             WebTouchHandler.prototype.prevent = function (event) {
-                event.stopPropagation();
+                //** 源码改动去除冒泡 */
+                // event.stopPropagation();
                 if (event["isScroll"] != true && !this.canvas['userTyping']) {
                     event.preventDefault();
                 }
@@ -3330,7 +3331,8 @@ var egret;
                 Html5Capatibility.ua = ua;
                 Html5Capatibility._canUseBlob = false;
                 var canUseWebAudio = window["AudioContext"] || window["webkitAudioContext"] || window["mozAudioContext"];
-                if (canUseWebAudio) {
+                //** 源码改动 **/
+                if (canUseWebAudio && web.Html5Capatibility._audioType !== 3) {
                     try {
                         //防止某些chrome版本创建异常问题
                         web.WebAudioDecode.ctx = new (window["AudioContext"] || window["webkitAudioContext"] || window["mozAudioContext"])();
@@ -3338,6 +3340,9 @@ var egret;
                     catch (e) {
                         canUseWebAudio = false;
                     }
+                }
+                else {
+                    canUseWebAudio = false;
                 }
                 var audioType = Html5Capatibility._audioType;
                 var checkAudioType;

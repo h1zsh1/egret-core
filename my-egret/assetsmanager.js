@@ -2893,3 +2893,5 @@ var RES;
     RES.ResourceManagerError = ResourceManagerError;
     __reflect(ResourceManagerError.prototype, "RES.ResourceManagerError");
 })(RES || (RES = {}));
+
+window.RES = RES

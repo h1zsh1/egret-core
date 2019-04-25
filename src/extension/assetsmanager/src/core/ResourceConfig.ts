@@ -365,6 +365,3 @@ module RES {
         }
     }
 }
-//**源码改动 */
-
-window['RES'] = RES

@@ -80,14 +80,17 @@ namespace egret.web {
 
             Html5Capatibility._canUseBlob = false;
             let canUseWebAudio = window["AudioContext"] || window["webkitAudioContext"] || window["mozAudioContext"];
-            if (canUseWebAudio) {
+            //** 源码改动 **/
+            if (canUseWebAudio && web.Html5Capatibility._audioType !== 3) {
                 try {
                     //防止某些chrome版本创建异常问题
-                    WebAudioDecode.ctx = new (window["AudioContext"] || window["webkitAudioContext"] || window["mozAudioContext"])();
+                    web.WebAudioDecode.ctx = new (window["AudioContext"] || window["webkitAudioContext"] || window["mozAudioContext"])();
                 }
                 catch (e) {
                     canUseWebAudio = false;
                 }
+            } else {
+                canUseWebAudio = false;
             }
             let audioType = Html5Capatibility._audioType;
             let checkAudioType;
